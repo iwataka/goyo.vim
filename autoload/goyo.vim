@@ -49,7 +49,7 @@ function! s:init_pad(command)
   execute a:command
 
   setlocal buftype=nofile bufhidden=wipe nomodifiable nobuflisted noswapfile
-      \ nonu nocursorline nocursorcolumn winfixwidth winfixheight statusline=\ 
+      \ nonu nocursorline nocursorcolumn winfixwidth winfixheight
   if exists('&rnu')
     setlocal nornu
   endif
@@ -68,7 +68,6 @@ function! s:setup_pad(bufnr, vert, size, repel)
   execute (a:vert ? 'vertical ' : '') . 'resize ' . max([0, a:size])
   augroup goyop
     execute 'autocmd WinEnter,CursorMoved <buffer> nested call s:blank("'.a:repel.'")'
-    autocmd WinLeave <buffer> call s:hide_statusline()
   augroup END
 
   " To hide scrollbars of pad windows in GVim
@@ -119,10 +118,6 @@ function! s:tranquilize()
     endif
     call s:set_color(grp, '', 'NONE')
   endfor
-endfunction
-
-function! s:hide_statusline()
-  let &l:statusline = repeat(' ', winwidth(0))
 endfunction
 
 function! s:hide_linenr()
@@ -261,11 +256,9 @@ function! s:goyo_on(dim)
     autocmd TabLeave    *        call s:goyo_off()
     autocmd VimResized  *        call s:resize_pads()
     autocmd ColorScheme *        call s:tranquilize()
-    autocmd BufWinEnter *        call s:hide_linenr() | call s:hide_statusline()
-    autocmd WinEnter,WinLeave *  call s:hide_statusline()
+    autocmd BufWinEnter *        call s:hide_linenr()
   augroup END
 
-  call s:hide_statusline()
   if exists('g:goyo_callbacks[0]')
     call g:goyo_callbacks[0]()
   endif
